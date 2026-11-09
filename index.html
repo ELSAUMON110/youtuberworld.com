@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="es">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="theme-color" content="#f6f5ee">
+	<title>Reto: Crecer y conocer</title>
+	<style>
+		@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+		:root {
+			color-scheme: light;
+			--paper: #f6f5ee;
+			--ink: #172f32;
+			--muted: #647476;
+			--teal: #167c74;
+			--teal-dark: #105e59;
+			--coral: #ef785f;
+			--yellow: #f4c95d;
+			--line: #dfe4dc;
+			--white: #fffefa;
+			--green-pale: #e4f3e8;
+			--red-pale: #fff0e9;
+			--shadow: 0 18px 55px rgba(29, 61, 58, .09);
+		}
+
+		* { box-sizing: border-box; }
+		body {
+			margin: 0;
+			min-height: 100vh;
+			color: var(--ink);
+			background-color: var(--paper);
+			background-image: radial-gradient(#cfd9cf 0.7px, transparent 0.7px);
+			background-size: 19px 19px;
+			font-family: 'DM Sans', sans-serif;
+		}
+		button, input { font: inherit; }
+		button { cursor: pointer; }
+		button:focus-visible, input:focus-visible { outline: 3px solid var(--yellow); outline-offset: 3px; }
+		.shell { width: min(1060px, calc(100% - 36px)); margin: 0 auto; padding: 26px 0 42px; }
+		.topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 30px; }
+		.brand { display: flex; align-items: center; gap: 11px; font-family: 'Space Grotesk', sans-serif; font-size: 16px; font-weight: 700; }
+		.brand-mark { display: grid; width: 38px; height: 38px; place-items: center; border-radius: 12px; color: var(--white); background: var(--teal); font-size: 19px; }
+		.top-actions { display: flex; align-items: center; gap: 10px; }
+		.icon-button { display: grid; width: 42px; height: 42px; place-items: center; border: 1px solid var(--line); border-radius: 50%; color: var(--ink); background: var(--white); font-family: 'Space Grotesk', sans-serif; font-size: 21px; font-weight: 700; }
+		.icon-button:hover { border-color: var(--teal); color: var(--teal); }
+		.eyebrow { margin: 0 0 11px; color: var(--teal); font-size: 12px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+		h1, h2, h3, p { margin-top: 0; }
+		h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; }
+		h1 { max-width: 700px; margin-bottom: 14px; font-size: clamp(38px, 7vw, 68px); line-height: .98; }
+		h1 span { color: var(--teal); }
+		.intro { max-width: 610px; margin-bottom: 28px; color: var(--muted); font-size: 17px; line-height: 1.65; }
+		.layout { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(270px, .75fr); gap: 22px; align-items: start; }
+		.panel { border: 1px solid rgba(208, 218, 209, .8); border-radius: 18px; background: var(--white); box-shadow: var(--shadow); }
+		.start-panel { position: relative; overflow: hidden; padding: clamp(24px, 5vw, 46px); }
+		.start-panel::after { position: absolute; top: -34px; right: -25px; width: 160px; height: 160px; border: 22px solid #e6f0e8; border-radius: 50%; content: ''; pointer-events: none; }
+		.start-panel > * { position: relative; z-index: 1; }
+		.start-panel h2 { max-width: 500px; margin-bottom: 12px; font-size: 29px; line-height: 1.12; }
+		.start-panel p:not(.eyebrow) { max-width: 490px; color: var(--muted); line-height: 1.6; }
+		.name-label { display: block; margin: 22px 0 8px; font-size: 13px; font-weight: 700; }
+		.name-input { width: 100%; max-width: 370px; height: 48px; padding: 0 14px; border: 1px solid var(--line); border-radius: 10px; color: var(--ink); background: #fff; }
+		.primary-button, .secondary-button { display: inline-flex; min-height: 48px; align-items: center; justify-content: center; gap: 9px; padding: 0 19px; border: 0; border-radius: 10px; font-weight: 800; }
+		.primary-button { color: #fff; background: var(--teal); }
+		.primary-button:hover { background: var(--teal-dark); }
+		.secondary-button { border: 1px solid var(--line); color: var(--ink); background: var(--white); }
+		.secondary-button:hover { border-color: var(--teal); }
+		.start-button { margin-top: 13px; }
+		.side-panel { padding: 23px; }
+		.side-panel h3 { margin-bottom: 15px; font-size: 18px; }
+		.score-row { display: flex; justify-content: space-between; gap: 12px; padding: 13px 0; border-top: 1px solid var(--line); font-size: 13px; }
+		.score-row strong { text-align: right; }
+		.local-note { margin: 14px 0 0; padding: 11px 12px; border-radius: 9px; color: #536465; background: #f1f5ef; font-size: 12px; line-height: 1.5; }
+		.screen { display: none; }
+		.screen.active { display: block; animation: appear .35s ease both; }
+		@keyframes appear { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+		.quiz-head { display: flex; justify-content: space-between; gap: 14px; align-items: center; margin-bottom: 12px; }
+		.quiz-count, .score-pill { font-size: 13px; font-weight: 800; }
+		.score-pill { padding: 9px 12px; border-radius: 9px; color: var(--teal-dark); background: #e4f3e8; }
+		.progress-track { height: 8px; overflow: hidden; margin-bottom: 20px; border-radius: 99px; background: #e4e9e2; }
+		.progress-fill { width: 0; height: 100%; border-radius: inherit; background: var(--coral); transition: width .3s ease; }
+		.question-panel { padding: clamp(22px, 5vw, 38px); }
+		.question-panel h2 { max-width: 720px; margin: 7px 0 25px; font-size: clamp(23px, 4vw, 34px); line-height: 1.22; }
+		.answer-list { display: grid; gap: 10px; }
+		.answer-button { display: flex; min-height: 58px; align-items: center; gap: 13px; padding: 11px 14px; border: 1px solid var(--line); border-radius: 11px; color: var(--ink); background: #fff; text-align: left; transition: border-color .16s, background .16s, transform .16s; }
+		.answer-button:hover:not(:disabled) { transform: translateY(-1px); border-color: var(--teal); background: #f7fbf7; }
+		.answer-key { display: grid; width: 30px; height: 30px; flex: 0 0 auto; place-items: center; border-radius: 8px; color: var(--teal-dark); background: #e9f2eb; font-size: 12px; font-weight: 800; }
+		.answer-button.correct { border-color: #69a87c; background: var(--green-pale); }
+		.answer-button.incorrect { border-color: #e08b70; background: var(--red-pale); }
+		.answer-button:disabled { cursor: default; }
+		.feedback { min-height: 28px; margin: 17px 0 0; font-size: 14px; font-weight: 700; line-height: 1.5; }
+		.feedback.good { color: #277345; }
+		.feedback.bad { color: #a64e37; }
+		.next-row { display: flex; justify-content: flex-end; margin-top: 6px; }
+		.result-grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(260px, .8fr); gap: 20px; }
+		.result-panel { padding: clamp(22px, 4vw, 34px); }
+		.score-big { margin: 7px 0 8px; font-family: 'Space Grotesk', sans-serif; font-size: 56px; font-weight: 700; line-height: 1; }
+		.result-message { color: var(--muted); line-height: 1.6; }
+		.result-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+		.missed-list { display: grid; gap: 10px; margin: 16px 0 0; padding: 0; list-style: none; }
+		.missed-list li { padding: 12px; border-radius: 9px; background: #f4f6f1; font-size: 13px; line-height: 1.5; }
+		.missed-list strong { display: block; margin-bottom: 4px; }
+		.leaderboard-panel { padding: 23px; }
+		.leaderboard-panel h2 { margin-bottom: 5px; font-size: 21px; }
+		.leaderboard-sub { margin-bottom: 15px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+		.table-wrap { overflow-x: auto; }
+		table { width: 100%; border-collapse: collapse; text-align: left; }
+		th { padding: 9px 7px; color: var(--muted); font-size: 11px; text-transform: uppercase; }
+		td { padding: 11px 7px; border-top: 1px solid var(--line); font-size: 13px; }
+		td:first-child { width: 34px; color: var(--teal); font-weight: 800; }
+		td:last-child { text-align: right; font-weight: 800; white-space: nowrap; }
+		.empty-rank { padding: 16px 0; color: var(--muted); font-size: 13px; }
+		.credits { margin: 23px 0 0; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; line-height: 1.6; }
+		.credits strong { color: var(--ink); }
+		.modal-backdrop { position: fixed; z-index: 5; inset: 0; display: none; place-items: center; padding: 18px; background: rgba(15, 36, 36, .55); }
+		.modal-backdrop.open { display: grid; }
+		.modal { width: min(480px, 100%); padding: 26px; border-radius: 16px; background: var(--white); box-shadow: 0 22px 70px rgba(0,0,0,.2); animation: appear .2s ease both; }
+		.modal h2 { margin: 0 0 13px; font-size: 24px; }
+		.modal p { color: var(--muted); font-size: 14px; line-height: 1.7; }
+		.modal-close { float: right; margin: -7px -7px 8px 8px; }
+		.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
+		@media (max-width: 760px) {
+			.layout, .result-grid { grid-template-columns: 1fr; }
+			.topbar { margin-bottom: 23px; }
+			.brand { font-size: 14px; }
+			.side-panel { order: 2; }
+		}
+		@media (max-width: 440px) {
+			.shell { width: min(100% - 24px, 1060px); padding-top: 16px; }
+			.intro { font-size: 15px; }
+			.start-panel::after { width: 105px; height: 105px; border-width: 15px; }
+			.question-panel h2 { font-size: 23px; }
+			.answer-button { font-size: 14px; }
+			.icon-button { width: 40px; height: 40px; }
+		}
+		@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+	</style>
+</head>
+<body>
+	<main class="shell">
+		<header class="topbar">
+			<div class="brand"><span class="brand-mark" aria-hidden="true">R</span><span>RETO DE CIENCIAS</span></div>
+			<div class="top-actions">
+				<button class="icon-button" id="helpButton" type="button" aria-label="Abrir ayuda" aria-haspopup="dialog" title="Ayuda">?</button>
+			</div>
+		</header>
+
+		<section class="screen active" id="startScreen" aria-labelledby="pageTitle">
+			<p class="eyebrow">Aprender · practicar · avanzar</p>
+			<h1 id="pageTitle">Crecer y <span>conocer.</span></h1>
+			<p class="intro">Pon a prueba lo que sabes sobre pubertad, reproducción y embarazo. Cada respuesta acertada suma un punto.</p>
+			<div class="layout">
+				<section class="panel start-panel">
+					<p class="eyebrow">20 preguntas · orden aleatorio</p>
+					<h2>¿Listo para el reto?</h2>
+					<p>Lee cada pregunta, elige una respuesta y revisa la explicación. Al final podrás repasar lo que quieras volver a estudiar.</p>
+					<label class="name-label" for="playerName">Tu nombre para la clasificación</label>
+					<input class="name-input" id="playerName" maxlength="18" autocomplete="nickname" placeholder="Por ejemplo: Alex">
+					<div><button class="primary-button start-button" id="startButton" type="button">Empezar <span aria-hidden="true">→</span></button></div>
+				</section>
+				<aside class="panel side-panel" aria-labelledby="rankTitle">
+					<h3 id="rankTitle">Clasificación</h3>
+					<div class="score-row"><span>Mejor resultado</span><strong id="bestScore">Aún no hay partidas</strong></div>
+					<div class="score-row"><span>Preguntas por partida</span><strong>20</strong></div>
+					<p class="local-note">Esta tabla se guarda en este dispositivo. Para compartir una clasificación mundial hace falta conectar un servidor en línea.</p>
+				</aside>
+			</div>
+		</section>
+
+		<section class="screen" id="quizScreen" aria-labelledby="questionText">
+			<div class="quiz-head"><span class="quiz-count" id="questionCount">Pregunta 1 de 20</span><span class="score-pill" id="scoreDisplay" aria-live="polite">Puntos: 0</span></div>
+			<div class="progress-track" role="progressbar" aria-label="Progreso del cuestionario" aria-valuemin="0" aria-valuemax="20" aria-valuenow="0"><div class="progress-fill" id="progressFill"></div></div>
+			<article class="panel question-panel">
+				<p class="eyebrow" id="questionCategory">Pubertad y reproducción</p>
+				<h2 id="questionText"></h2>
+				<div class="answer-list" id="answerList"></div>
+				<p class="feedback" id="feedback" aria-live="polite"></p>
+				<div class="next-row"><button class="primary-button" id="nextButton" type="button" hidden>Siguiente <span aria-hidden="true">→</span></button></div>
+			</article>
+		</section>
+
+		<section class="screen" id="resultScreen" aria-labelledby="resultTitle">
+			<p class="eyebrow">Reto terminado</p>
+			<h1 id="resultTitle">¡Buen trabajo!</h1>
+			<div class="result-grid">
+				<section class="panel result-panel">
+					<p class="eyebrow" id="resultName">Resultado de la partida</p>
+					<div class="score-big" id="finalScore">0/20</div>
+					<p class="result-message" id="resultMessage"></p>
+					<div class="result-actions"><button class="primary-button" id="againButton" type="button">Jugar otra vez <span aria-hidden="true">↻</span></button><button class="secondary-button" id="homeButton" type="button">Inicio</button></div>
+					<h3 style="margin:26px 0 0;font-size:17px">Para repasar</h3>
+					<ul class="missed-list" id="missedList"></ul>
+					<p class="credits"><strong>Desarrolladores:</strong> escribe aquí tu nombre y el de tu equipo.<br>Proyecto educativo creado con ayuda de GitHub Copilot.</p>
+				</section>
+				<aside class="panel leaderboard-panel" aria-labelledby="leaderboardTitle">
+					<h2 id="leaderboardTitle">Tabla de clasificación</h2>
+					<p class="leaderboard-sub">Mejores partidas guardadas en este dispositivo</p>
+					<div class="table-wrap" id="leaderboardContent"></div>
+					<p class="local-note">Los resultados no se comparten todavía con otros dispositivos. Se necesita un servidor para crear un ranking mundial.</p>
+				</aside>
+			</div>
+		</section>
+	</main>
+
+	<div class="modal-backdrop" id="helpDialog" role="presentation">
+		<section class="modal" role="dialog" aria-modal="true" aria-labelledby="helpTitle" aria-describedby="helpDescription">
+			<button class="icon-button modal-close" id="closeHelp" type="button" aria-label="Cerrar ayuda">×</button>
+			<p class="eyebrow">Cómo jugar</p>
+			<h2 id="helpTitle">Una pregunta a la vez</h2>
+			<p id="helpDescription">El orden de las preguntas cambia en cada partida. Selecciona una opción para ver si acertaste; cada acierto suma un punto. Al terminar verás tu resultado, una tabla guardada en este dispositivo y las preguntas que puedes repasar.</p>
+			<button class="primary-button" id="gotItButton" type="button">Entendido</button>
+		</section>
+	</div>
+
+	<script>
+		'use strict';
+
+		const questions = [
+			{ question: '¿Cómo se conocen las diferencias corporales que están presentes desde el nacimiento?', options: ['Caracteres sexuales primarios', 'Caracteres sexuales secundarios', 'Cambios emocionales', 'Etapas vitales'], answer: 0, explanation: 'Se llaman caracteres sexuales primarios: órganos y rasgos reproductivos presentes desde el nacimiento.' },
+			{ question: '¿Qué son los caracteres sexuales primarios y los secundarios?', options: ['Los primarios aparecen en la adultez y los secundarios al nacer', 'Los primarios son órganos reproductores; los secundarios son cambios que suelen aparecer en la pubertad', 'Son dos nombres para las células sexuales', 'Los primarios son emociones y los secundarios, etapas de la vida'], answer: 1, explanation: 'Los primarios corresponden a los órganos reproductores. Los secundarios son cambios físicos que aparecen durante la pubertad.' },
+			{ question: '¿Qué otro nombre reciben las células sexuales y cuáles son?', options: ['Hormonas: estrógeno y testosterona', 'Gametas: óvulos y espermatozoides', 'Cigotos: ovarios y testículos', 'Glándulas: útero y próstata'], answer: 1, explanation: 'Las células sexuales también se llaman gametos: óvulos y espermatozoides.' },
+			{ question: '¿Dónde se producen los óvulos y dónde los espermatozoides?', options: ['En el útero y la próstata', 'En las trompas y la uretra', 'En los ovarios y los testículos, respectivamente', 'En la vagina y la vejiga'], answer: 2, explanation: 'Los ovarios producen óvulos y los testículos producen espermatozoides.' },
+			{ question: '¿Qué significa que la reproducción humana sea sexual?', options: ['Que participa la unión de un óvulo y un espermatozoide', 'Que siempre ocurre en una estación del año', 'Que solo interviene una célula', 'Que el bebé se desarrolla fuera del útero'], answer: 0, explanation: 'En la reproducción sexual se unen dos gametos: un óvulo y un espermatozoide.' },
+			{ question: '¿Cuál es una descripción aproximada de las etapas vitales?', options: ['Infancia, adolescencia, adultez y vejez; sus edades pueden variar', 'Niñez hasta los 5 años y luego vejez', 'Solo infancia y adultez, con edades exactas iguales para todos', 'Las etapas dependen únicamente del mes de nacimiento'], answer: 0, explanation: 'Una división común es infancia, adolescencia, adultez y vejez. Los límites de edad son aproximados y pueden variar según la clasificación.' },
+			{ question: '¿Cuándo y dónde empiezan a formarse los espermatozoides?', options: ['Antes del nacimiento, en los ovarios', 'Durante la pubertad, en los testículos', 'En la adultez, en la próstata', 'Durante el embarazo, en la uretra'], answer: 1, explanation: 'La producción de espermatozoides suele comenzar en la pubertad y ocurre en los testículos.' },
+			{ question: '¿En qué momento de la vida contiene la mujer la mayor parte de sus óvulos inmaduros?', options: ['Al nacer', 'Al cumplir 18 años', 'Después del primer embarazo', 'Al comenzar la menopausia'], answer: 0, explanation: 'La reserva de ovocitos se forma antes del nacimiento; al nacer ya está presente y disminuye con el tiempo.' },
+			{ question: '¿Qué órganos forman parte del aparato reproductor masculino y cuál produce gametos?', options: ['Testículos, conductos deferentes, próstata y pene; los testículos producen espermatozoides', 'Ovarios, útero y vagina; el útero produce espermatozoides', 'Vejiga y riñones; los riñones producen óvulos', 'Solo la uretra; produce todos los gametos'], answer: 0, explanation: 'Entre sus órganos están los testículos, conductos deferentes, vesículas seminales, próstata y pene. Los testículos producen los gametos masculinos.' },
+			{ question: '¿Qué función cumple la uretra en los chicos y qué particularidad tiene?', options: ['Conduce orina y semen al exterior, aunque no pasan a la vez', 'Conecta los ovarios con el útero', 'Produce hormonas y óvulos', 'Lleva alimento al estómago'], answer: 0, explanation: 'La uretra permite la salida de la orina y del semen en momentos distintos; no cumple ambas funciones simultáneamente.' },
+			{ question: '¿Cuáles son los órganos principales del aparato reproductor femenino?', options: ['Ovarios, trompas uterinas, útero y vagina', 'Testículos, próstata y pene', 'Riñones, vejiga y uretra', 'Pulmones, útero y estómago'], answer: 0, explanation: 'Los principales órganos internos son los ovarios, las trompas uterinas, el útero y la vagina. La vulva es la parte externa.' },
+			{ question: '¿Qué ocurre aproximadamente una vez por ciclo en los ovarios?', options: ['Se libera un óvulo en la ovulación', 'Se produce la menstruación dentro del ovario', 'Se forma la placenta', 'Se detiene para siempre la producción hormonal'], answer: 0, explanation: 'En la ovulación, un ovario libera un óvulo. El ciclo no dura exactamente 28 días en todas las personas.' },
+			{ question: '¿Qué es la menstruación y cuándo suele producirse?', options: ['La salida de sangre y tejido del revestimiento uterino cuando no hay embarazo', 'La liberación de un óvulo desde el ovario', 'La fecundación dentro de una trompa', 'La primera fase del parto'], answer: 0, explanation: 'La menstruación es el desprendimiento del revestimiento del útero; suele ocurrir cuando no se ha iniciado un embarazo.' },
+			{ question: '¿Qué se forma tras la fecundación y qué ocurre después?', options: ['Un cigoto, que se divide mientras viaja hacia el útero y da inicio al desarrollo embrionario', 'Una placenta completa de inmediato', 'Un espermatozoide, que se convierte en óvulo', 'Un feto antes de que las células se dividan'], answer: 0, explanation: 'Tras la unión de los gametos se forma un cigoto. Sus células se dividen y comienza el desarrollo embrionario antes y después de llegar al útero.' },
+			{ question: '¿Cuánto dura aproximadamente el embarazo y qué función tienen la placenta y el cordón umbilical?', options: ['Unas 40 semanas desde la última menstruación; la placenta intercambia sustancias y el cordón la conecta con el feto', 'Unas 10 semanas; el cordón produce los óvulos', 'Dos años; la placenta forma los pulmones', 'Exactamente 28 días; ambos órganos protegen el útero'], answer: 0, explanation: 'El embarazo dura alrededor de 40 semanas desde la última menstruación. La placenta permite intercambios y el cordón umbilical conecta al feto con ella.' },
+			{ question: '¿Qué contiene la bolsa amniótica y qué protección ofrece?', options: ['Líquido amniótico, que amortigua golpes y ayuda a proteger al embrión o feto', 'Aire, que alimenta al embrión', 'Sangre menstrual, que lo mantiene caliente', 'Leche, que lo nutre directamente'], answer: 0, explanation: 'La bolsa contiene líquido amniótico, que ayuda a amortiguar movimientos y protege al embrión o feto.' },
+			{ question: '¿Qué hábitos suelen recomendarse durante el embarazo?', options: ['Controles de salud, alimentación variada, actividad física adecuada y evitar alcohol, tabaco y drogas', 'Evitar todo movimiento y saltarse los controles', 'Tomar medicamentos sin consultar', 'Comer solo un tipo de alimento'], answer: 0, explanation: 'Se recomiendan controles prenatales, alimentación equilibrada y actividad apropiada. Es importante evitar alcohol, tabaco y drogas y consultar al equipo de salud.' },
+			{ question: '¿Qué es el parto y en qué consiste la fase de dilatación?', options: ['Es el nacimiento; en la dilatación el cuello del útero se abre gradualmente', 'Es la fecundación; el cuello del útero se cierra', 'Es la ovulación; se abre la placenta', 'Es la menstruación; se forma el cordón'], answer: 0, explanation: 'El parto es el proceso del nacimiento. En la fase de dilatación, el cuello uterino se abre para permitir el paso del bebé.' },
+			{ question: '¿Cuáles son las tres fases que suelen describirse en el parto?', options: ['Dilatación, expulsión y alumbramiento', 'Ovulación, fecundación y menstruación', 'Infancia, adolescencia y adultez', 'Gestación, pubertad y menopausia'], answer: 0, explanation: 'Se describen como dilatación, expulsión del bebé y alumbramiento, cuando se expulsa la placenta.' },
+			{ question: '¿Qué cambios emocionales y de independencia pueden aparecer al inicio de la pubertad?', options: ['Cambios de ánimo, nuevas emociones y deseo gradual de más independencia; cada persona vive su ritmo', 'Las mismas emociones y necesidades para todas las personas', 'Independencia total de un día para otro', 'Ningún cambio emocional posible'], answer: 0, explanation: 'Pueden aparecer emociones nuevas, cambios de ánimo y más deseo de autonomía. El ritmo es distinto para cada persona, y pedir apoyo está bien.' }
+		];
+
+		const STORAGE_KEY = 'reto-crecer-conocer-results-v1';
+		const screens = ['startScreen', 'quizScreen', 'resultScreen'].map((id) => document.getElementById(id));
+		const answerList = document.getElementById('answerList');
+		const nextButton = document.getElementById('nextButton');
+		const feedback = document.getElementById('feedback');
+		const progressTrack = document.querySelector('.progress-track');
+		let roundQuestions = [];
+		let currentIndex = 0;
+		let score = 0;
+		let player = 'Jugador';
+		let missedQuestions = [];
+
+		function showScreen(screenId) {
+			screens.forEach((screen) => screen.classList.toggle('active', screen.id === screenId));
+			window.scrollTo({ top: 0, behavior: 'smooth' });
+		}
+
+		function shuffle(items) {
+			const shuffled = [...items];
+			for (let index = shuffled.length - 1; index > 0; index -= 1) {
+				const swapIndex = Math.floor(Math.random() * (index + 1));
+				[shuffled[index], shuffled[swapIndex]] = [shuffled[swapIndex], shuffled[index]];
+			}
+			return shuffled;
+		}
+
+		function getResults() {
+			try {
+				const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+				return Array.isArray(saved) ? saved : [];
+			} catch {
+				return [];
+			}
+		}
+
+		function saveResult(result) {
+			const results = [...getResults(), result]
+				.sort((first, second) => second.score - first.score || first.date - second.date)
+				.slice(0, 10);
+			try {
+				localStorage.setItem(STORAGE_KEY, JSON.stringify(results));
+			} catch {
+				// The current game's score is still shown if browser storage is unavailable.
+			}
+			return results;
+		}
+
+		function renderLeaderboard(results = getResults()) {
+			const container = document.getElementById('leaderboardContent');
+			if (!results.length) {
+				container.innerHTML = '<p class="empty-rank">Tu primera partida puede aparecer aquí.</p>';
+				return;
+			}
+			const table = document.createElement('table');
+			table.innerHTML = '<thead><tr><th>#</th><th>Jugador</th><th>Puntos</th></tr></thead>';
+			const body = document.createElement('tbody');
+			results.forEach((entry, index) => {
+				const row = document.createElement('tr');
+				const position = document.createElement('td');
+				const name = document.createElement('td');
+				const points = document.createElement('td');
+				position.textContent = String(index + 1);
+				name.textContent = entry.name;
+				points.textContent = `${entry.score}/20`;
+				row.append(position, name, points);
+				body.append(row);
+			});
+			table.append(body);
+			container.replaceChildren(table);
+		}
+
+		function updateBestScore() {
+			const results = getResults();
+			document.getElementById('bestScore').textContent = results.length ? `${results[0].score}/20 puntos` : 'Aún no hay partidas';
+		}
+
+		function beginGame() {
+			player = document.getElementById('playerName').value.trim() || 'Jugador';
+			roundQuestions = shuffle(questions);
+			currentIndex = 0;
+			score = 0;
+			missedQuestions = [];
+			document.getElementById('scoreDisplay').textContent = 'Puntos: 0';
+			showScreen('quizScreen');
+			renderQuestion();
+		}
+
+		function renderQuestion() {
+			const item = roundQuestions[currentIndex];
+			document.getElementById('questionCount').textContent = `Pregunta ${currentIndex + 1} de ${roundQuestions.length}`;
+			document.getElementById('questionText').textContent = item.question;
+			document.getElementById('questionCategory').textContent = currentIndex < 7 ? 'Pubertad y reproducción' : currentIndex < 13 ? 'Cuerpo y ciclos' : 'Embarazo y parto';
+			progressTrack.setAttribute('aria-valuenow', String(currentIndex));
+			document.getElementById('progressFill').style.width = `${(currentIndex / roundQuestions.length) * 100}%`;
+			feedback.textContent = '';
+			feedback.className = 'feedback';
+			nextButton.hidden = true;
+			answerList.replaceChildren();
+
+			item.options.forEach((option, optionIndex) => {
+				const button = document.createElement('button');
+				button.className = 'answer-button';
+				button.type = 'button';
+				button.innerHTML = `<span class="answer-key" aria-hidden="true">${String.fromCharCode(65 + optionIndex)}</span><span></span>`;
+				button.lastElementChild.textContent = option;
+				button.addEventListener('click', () => selectAnswer(optionIndex));
+				answerList.append(button);
+			});
+		}
+
+		function selectAnswer(selectedIndex) {
+			const item = roundQuestions[currentIndex];
+			const buttons = [...answerList.querySelectorAll('button')];
+			buttons.forEach((button) => { button.disabled = true; });
+			if (selectedIndex === item.answer) {
+				score += 1;
+				document.getElementById('scoreDisplay').textContent = `Puntos: ${score}`;
+				buttons[selectedIndex].classList.add('correct');
+				feedback.textContent = `¡Correcto! ${item.explanation}`;
+				feedback.classList.add('good');
+			} else {
+				buttons[selectedIndex].classList.add('incorrect');
+				buttons[item.answer].classList.add('correct');
+				missedQuestions.push(item);
+				feedback.textContent = `La respuesta correcta es: ${item.options[item.answer]}. ${item.explanation}`;
+				feedback.classList.add('bad');
+			}
+			nextButton.textContent = currentIndex === roundQuestions.length - 1 ? 'Ver resultado' : 'Siguiente →';
+			nextButton.hidden = false;
+			nextButton.focus();
+		}
+
+		function finishGame() {
+			const result = { name: player, score, date: Date.now() };
+			const results = saveResult(result);
+			document.getElementById('resultName').textContent = `Resultado de ${player}`;
+			document.getElementById('finalScore').textContent = `${score}/20`;
+			const percentage = score / questions.length;
+			const message = percentage === 1
+				? '¡Perfecto! Has acertado todas. Estás muy preparado para este tema.'
+				: percentage >= .75
+					? '¡Muy bien! Tienes una base sólida. Repasa las preguntas que fallaste para afianzar lo aprendido.'
+					: percentage >= .5
+						? 'Vas avanzando. Revisa las explicaciones y vuelve a intentarlo para ganar seguridad.'
+						: 'Cada intento ayuda a aprender. Repasa con calma y prueba otra vez: puedes mejorar tu puntaje.';
+			document.getElementById('resultMessage').textContent = message;
+			const missedList = document.getElementById('missedList');
+			missedList.replaceChildren();
+			if (!missedQuestions.length) {
+				const item = document.createElement('li');
+				item.textContent = '¡No hay respuestas para repasar en esta partida!';
+				missedList.append(item);
+			} else {
+				missedQuestions.forEach((question) => {
+					const item = document.createElement('li');
+					const title = document.createElement('strong');
+					title.textContent = question.question;
+					item.append(title, document.createTextNode(`Respuesta: ${question.options[question.answer]}. ${question.explanation}`));
+					missedList.append(item);
+				});
+			}
+			renderLeaderboard(results);
+			updateBestScore();
+			showScreen('resultScreen');
+		}
+
+		document.getElementById('startButton').addEventListener('click', beginGame);
+		document.getElementById('againButton').addEventListener('click', beginGame);
+		document.getElementById('homeButton').addEventListener('click', () => {
+			updateBestScore();
+			showScreen('startScreen');
+		});
+		nextButton.addEventListener('click', () => {
+			currentIndex += 1;
+			if (currentIndex === roundQuestions.length) finishGame();
+			else renderQuestion();
+		});
+
+		const helpDialog = document.getElementById('helpDialog');
+		const helpButton = document.getElementById('helpButton');
+		function closeHelp() {
+			helpDialog.classList.remove('open');
+			helpButton.focus();
+		}
+		helpButton.addEventListener('click', () => {
+			helpDialog.classList.add('open');
+			document.getElementById('closeHelp').focus();
+		});
+		document.getElementById('closeHelp').addEventListener('click', closeHelp);
+		document.getElementById('gotItButton').addEventListener('click', closeHelp);
+		helpDialog.addEventListener('click', (event) => {
+			if (event.target === helpDialog) closeHelp();
+		});
+		document.addEventListener('keydown', (event) => {
+			if (event.key === 'Escape' && helpDialog.classList.contains('open')) closeHelp();
+		});
+
+		renderLeaderboard();
+		updateBestScore();
+	</script>
+</body>
+</html>
